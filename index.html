@@ -255,48 +255,64 @@
 </section>
 <!-- End demo video -->
 
-<!-- Overview -->
+<!-- Method -->
 <section class="section hero is-light">
   <div class="container is-max-desktop">
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Overview &amp; API</h2>
+        <h2 class="title is-3">Method</h2>
         <div class="content has-text-justified">
+          <h3>Task</h3>
           <p>
-            TranSlaDoorss is a web-based ASL fingerspelling (A–Z) translator that pairs a CLIPModel/CLIPProcessor backend with a Django REST API and a Bootstrap/vanilla JS webcam frontend. Predictions are surfaced with confidences and optional top-k, and a feedback endpoint stores labeled frames for future retraining.
+            We address ASL letter recognition as a 26-way classification problem. Given a single RGB image of a handshape, the system predicts the corresponding English letter A-Z.
+          </p>
+          <h3>Dataset and preprocessing</h3>
+          <p>
+            We use the Hugging Face ASL letter image dataset consisting of 26 labeled classes (A-Z). Images are converted to RGB and deterministically preprocessed into 224x224 square inputs via center-cropping and resizing (LANCZOS). No stochastic data augmentation is applied.
+          </p>
+          <h3>Data splits</h3>
+          <p>
+            Training uses the dataset's provided train split. For validation, we create a random 90/10 split of the training data using a fixed seed (42). Evaluation can be run on a user-selected split (train/validation/test); if a requested split is unavailable, the system falls back to an available split. An optional stratified per-class sampler is supported to control evaluation size while preserving class balance.
+          </p>
+          <h3>Model: prompt-based CLIP classification</h3>
+          <p>
+            We use CLIP ViT-B/32 in a prompt-based classification setup. Each class is represented by a fixed text prompt of the form:
+          </p>
+          <p><code>a photo of a hand showing the sign language letter X</code></p>
+          <p>
+            For an input image, CLIP produces image-text similarity logits (logits_per_image) over the 26 prompts. The predicted letter is the prompt with the highest logit.
           </p>
           <p>
-            Stack highlights: Django 5.2 + DRF, PyTorch + Hugging Face Transformers, PIL preprocessing, conda environment, and Jest/pytest coverage for frontend/backend behaviors.
+            Trainable parameters: only the vision encoder is updated during training. The text encoder and prompts remain fixed, ensuring the model learns visual features aligned to a stable text embedding space.
           </p>
-          <h3 id="translate-endpoint">/img_in/translate/</h3>
+          <h3>Training objective</h3>
+          <p>
+            We train using cross-entropy loss computed over the CLIP image-text logits against the ground-truth class label. This directly optimizes the model for correct prompt selection in the 26-way classification setting.
+          </p>
+          <h3>Optimization and schedule</h3>
+          <p>
+            Training uses AdamW (learning rate 1e-5, weight decay 0.01), batch size 32, for 15 epochs, with a linear learning-rate schedule (warmup default 0 steps) and gradient accumulation of 1.
+          </p>
+          <h3>Evaluation</h3>
           <ul>
-            <li>POST multipart/form-data with <code>image</code> (required) and optional <code>top_k</code> (1–26, default 1).</li>
-            <li>Validates presence and integrity with PIL; missing or corrupt images return 400 with clear error strings.</li>
-            <li>Success payload always includes <code>translation</code> and <code>prediction</code>; <code>top_predictions</code> appears when <code>top_k</code> &gt; 1 to match frontend/UI expectations.</li>
+            <li>Overall and per-class accuracy.</li>
+            <li>Confusion matrix (counts and row-normalized).</li>
+            <li>Top-k accuracy (k=5 when probabilities are available).</li>
+            <li>Per-class and aggregate precision/recall/F1 (macro and micro).</li>
+            <li>Confidence statistics (average confidence).</li>
+            <li>Calibration curve and expected calibration error (ECE).</li>
+            <li>Runtime/throughput measurements.</li>
           </ul>
-          <h3 id="feedback-endpoint">/img_in/feedback/</h3>
-          <ul>
-            <li>POST multipart/form-data with <code>image</code>, <code>predicted_label</code>, and <code>correct_label</code> (single letters A–Z; serializer uppercases).</li>
-            <li>Stores uploads under <code>backend/feedback_images</code> with labels and timestamp; responds 201 with id and echoed labels.</li>
-          </ul>
-          <h3 id="model-behavior">Model &amp; inference</h3>
-          <ul>
-            <li>CLIP-based predictor precomputes prompts for letters A–Z and selects device (CUDA → MPS → CPU) with graceful CPU fallback.</li>
-            <li>Model id resolution: explicit arg → env <code>ASL_MODEL_ID</code> → <code>ml/saved_weights/best_checkpoint.json</code> → default <code>openai/clip-vit-base-patch32</code>.</li>
-            <li>Top-k predictions produced via softmax over prompt similarities; predictor cached to avoid reloads per request.</li>
-          </ul>
-          <h3 id="setup">Local setup</h3>
-          <ul>
-            <li><code>conda env create -f env/environment_unified.yaml</code> then <code>conda activate transladoorss</code>.</li>
-            <li><code>cd backend</code> → <code>python manage.py migrate</code> → <code>python manage.py runserver</code> (DEBUG serves <code>frontend/index.html</code> and static assets).</li>
-            <li>Env vars: <code>SECRET_KEY</code> required; optional <code>DEBUG</code>, <code>ALLOWED_HOSTS</code>, <code>ASL_MODEL_ID</code>, <code>ASL_MODEL_DEVICE</code>.</li>
-          </ul>
+          <h3>Limitations</h3>
+          <p>
+            Because validation is constructed via a random split from the training data and preprocessing is deterministic, performance on held-out splits may not fully reflect generalization across unseen signers, environments, or capture conditions. We treat results as a proof of concept for prompt-based CLIP adaptation and emphasize the need for signer-independent and deployment-style evaluation in future work.
+          </p>
         </div>
       </div>
     </div>
   </div>
 </section>
-<!-- End paper overview -->
+<!-- End of Method -->
 
 
 <!-- Image carousel -->
