@@ -232,13 +232,20 @@
 <!-- End paper abstract -->
 
 
-<!-- Demo video -->
-<section class="hero teaser" id="webapp-demo">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <video poster="static/images/demo-poster.png" autoplay controls muted loop height="100%" preload="metadata">
-        <source src="static/videos/demo.mp4" type="video/mp4">
-      </video>
+<!-- Demo video (embedded) -->
+<section class="hero is-small is-light">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3">Demo</h2>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <div class="publication-video">
+            <video poster="static/images/demo-poster.png" controls muted loop preload="metadata">
+              <source src="static/videos/demo.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -326,27 +333,11 @@
 
 
 
-<!-- Youtube video -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title is-3">Frontend walkthrough</h2>
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          
-          <div class="publication-video">
-            <iframe src="https://www.youtube.com/embed/JkaxUblCGz0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End youtube video -->
+
 
 
 <!-- Video carousel -->
-<section class="hero is-small">
+<!-- <section class="hero is-small">
   <div class="hero-body">
     <div class="container">
       <h2 class="title is-3">Model, data, and UX clips</h2>
@@ -369,7 +360,7 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 <!-- End video carousel -->
 
 
@@ -428,8 +419,9 @@ curl -X POST http://localhost:8000/img_in/feedback/ \
     <div class="container">
       <h2 class="title is-3">Presentation</h2>
       <iframe
-        class="presentation-frame"
         src="static/pdfs/transladoors_presentation_v.10.pdf"
+        width="100%"
+        height="600"
         frameborder="0">
       </iframe>
     </div>
