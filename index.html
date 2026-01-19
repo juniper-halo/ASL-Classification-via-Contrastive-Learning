@@ -5,17 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <!-- Primary Meta Tags -->
-  <meta name="title" content="TranSlaDoorss - Web ASL Fingerspelling Translator">
+  <meta name="title" content="TranSlaDoorss: American Sign Language Classification via One-Shot Learning">
   <meta name="description" content="Web-based ASL fingerspelling (A–Z) prediction using a CLIP model, served via a Django REST API with a Bootstrap webcam frontend and feedback capture.">
   <meta name="keywords" content="ASL, fingerspelling, CLIP, Django, REST API, Bootstrap, webcam, PyTorch, Hugging Face, feedback">
-  <meta name="author" content="Benjamin, Juno, Kelly, Evelyn">
+  <meta name="author" content="Benjamin Vogt, Juno Tripathi, Kelly Shieh, Evelyn Hou">
   <meta name="robots" content="index, follow">
   <meta name="language" content="English">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="TranSlaDoorss">
-  <meta property="og:title" content="TranSlaDoorss: Web ASL Fingerspelling Translator">
+  <meta property="og:title" content="TranSlaDoorss: American Sign Language Classification via One-Shot Learning">
   <meta property="og:description" content="Web-based ASL fingerspelling (A–Z) prediction powered by CLIP, Django REST, and a webcam demo with feedback capture.">
   <meta property="og:url" content="http://localhost:8000/">
   <meta property="og:image" content="http://localhost:8000/static/images/carousel1.jpg">
@@ -23,7 +23,7 @@
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="TranSlaDoorss - ASL fingerspelling translator preview">
   <meta property="article:published_time" content="2024-01-01T00:00:00.000Z">
-  <meta property="article:author" content="Benjamin, Juno, Kelly, Evelyn">
+  <meta property="article:author" content="Benjamin Vogt, Juno Tripathi, Kelly Shieh, Evelyn Hou">
   <meta property="article:section" content="Software">
   <meta property="article:tag" content="ASL">
   <meta property="article:tag" content="CLIP">
@@ -33,18 +33,18 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="TranSlaDoorss">
   <meta name="twitter:creator" content="TranSlaDoorss">
-  <meta name="twitter:title" content="TranSlaDoorss: Web ASL Fingerspelling Translator">
+  <meta name="twitter:title" content="TranSlaDoorss: American Sign Language Classification via One-Shot Learning">
   <meta name="twitter:description" content="Web-based ASL fingerspelling (A–Z) prediction powered by CLIP, Django REST, and a webcam demo with feedback capture.">
   <meta name="twitter:image" content="http://localhost:8000/static/images/carousel1.jpg">
   <meta name="twitter:image:alt" content="TranSlaDoorss - ASL fingerspelling translator preview">
 
   <!-- Academic/Research Specific -->
-  <meta name="citation_title" content="TranSlaDoorss: Web-based ASL Fingerspelling Translator">
-  <meta name="citation_author" content="Benjamin">
-  <meta name="citation_author" content="Juno">
-  <meta name="citation_author" content="Kelly">
-  <meta name="citation_author" content="Evelyn">
-  <meta name="citation_publication_date" content="2024">
+  <meta name="citation_title" content="TranSlaDoorss: American Sign Language Classification via One-Shot Learning">
+  <meta name="citation_author" content="Benjamin Vogt">
+  <meta name="citation_author" content="Juno Tripathi">
+  <meta name="citation_author" content="Kelly Shieh">
+  <meta name="citation_author" content="Evelyn Hou">
+  <meta name="citation_publication_date" content="2025">
   <meta name="citation_conference_title" content="Project Snapshot">
   <meta name="citation_pdf_url" content="http://localhost:8000/static/pdfs/sample.pdf">
   
@@ -62,7 +62,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
 
-  <title>TranSlaDoorss - Web ASL Fingerspelling Translator</title>
+  <title>TranSlaDoorss: American Sign Language Classification via One-Shot Learning</title>
   
   <!-- Favicon and App Icons -->
   <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
@@ -109,19 +109,19 @@
     "author": [
       {
         "@type": "Person",
-        "name": "Benjamin"
+        "name": "Benjamin Vogt"
       },
       {
         "@type": "Person",
-        "name": "Juno"
+        "name": "Juno Tripathi"
       },
       {
         "@type": "Person",
-        "name": "Kelly"
+        "name": "Kelly Shieh"
       },
       {
         "@type": "Person",
-        "name": "Evelyn"
+        "name": "Evelyn Hou"
       }
     ],
     "url": "http://localhost:8000/",
@@ -158,48 +158,6 @@
     <i class="fas fa-chevron-up"></i>
   </button>
 
-  <!-- More Works Dropdown -->
-  <div class="more-works-container">
-    <button class="more-works-btn" onclick="toggleMoreWorks()" title="View More Works from Our Lab">
-      <i class="fas fa-flask"></i>
-      More Works
-      <i class="fas fa-chevron-down dropdown-arrow"></i>
-    </button>
-    <div class="more-works-dropdown" id="moreWorksDropdown">
-      <div class="dropdown-header">
-        <h4>More Works from Our Lab</h4>
-        <button class="close-btn" onclick="toggleMoreWorks()">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      <div class="works-list">
-        <a href="#translate-endpoint" class="work-item">
-          <div class="work-info">
-            <h5>Translate endpoint</h5>
-            <p>POST multipart/form-data with image + optional top_k; returns letter prediction and confidences.</p>
-            <span class="work-venue">Django REST</span>
-          </div>
-          <i class="fas fa-external-link-alt"></i>
-        </a>
-        <a href="#feedback-endpoint" class="work-item">
-          <div class="work-info">
-            <h5>Feedback endpoint</h5>
-            <p>Stores uploaded frame with predicted and correct labels under <code>feedback_images/</code>.</p>
-            <span class="work-venue">Django REST</span>
-          </div>
-          <i class="fas fa-external-link-alt"></i>
-        </a>
-        <a href="#model-behavior" class="work-item">
-          <div class="work-info">
-            <h5>CLIP inference stack</h5>
-            <p>Prompt-based CLIPModel/Processor with auto device selection and cached predictors.</p>
-            <span class="work-venue">PyTorch + Transformers</span>
-          </div>
-          <i class="fas fa-external-link-alt"></i>
-        </a>
-      </div>
-    </div>
-  </div>
 
   <main id="main-content">
   <section class="hero">
@@ -207,48 +165,38 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">TranSlaDoorss</h1>
+            <h1 class="title is-1 publication-title">TranSlaDoorss: American Sign Language Classification via One-Shot Learning</h1>
             <div class="is-size-5 publication-authors">
-              <span class="author-block">Benjamin</span>
-              <span class="author-block">Juno</span>
-              <span class="author-block">Kelly</span>
-              <span class="author-block">Evelyn</span>
+              <span class="author-block">Benjamin Vogt<sup>1</sup>,</span>
+              <span class="author-block"><a href="https://github.com/juniper-halo" target="_blank">Juno Tripathi<sup>1</sup></a>,</span>
+              <span class="author-block">Kelly Shieh<sup>1</sup>,</span>
+              <span class="author-block">Evelyn Hou<sup>1</sup></span>
             </div>
 
             <div class="is-size-5 publication-authors">
-              <span class="author-block">Web-based ASL fingerspelling (A–Z) | CLIP + Django REST + Bootstrap/vanilla JS</span><br>
-              <span class="author-block">Repo: transladoorss-model-dev-env</span>
+              <span class="author-block"><sup>1</sup> University of Illinois Urbana-Champaign</span><br>
+              <span class="author-block">2025</span>
             </div>
 
             <div class="column has-text-centered">
               <div class="publication-links">
                 <span class="link-block">
-                  <a href="#translate-endpoint"
+                  <a href="#frontend-demo"
                   class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
-                    <i class="fas fa-language"></i>
+                    <i class="fas fa-video"></i>
                   </span>
-                  <span>Translate API</span>
+                  <span>Demo</span>
                 </a>
               </span>
 
-              <span class="link-block">
-                <a href="#feedback-endpoint"
-                class="external-link button is-normal is-rounded is-dark">
-                <span class="icon">
-                  <i class="fas fa-comment-dots"></i>
-                </span>
-                <span>Feedback API</span>
-              </a>
-            </span>
-
             <span class="link-block">
-              <a href="#frontend-demo"
+              <a href="#presentation"
               class="external-link button is-normal is-rounded is-dark">
               <span class="icon">
-                <i class="fas fa-video"></i>
+                <i class="fas fa-file-powerpoint"></i>
               </span>
-              <span>Frontend demo</span>
+              <span>Presentation</span>
             </a>
           </span>
 
@@ -258,7 +206,7 @@
             <span class="icon">
               <i class="fab fa-github"></i>
             </span>
-            <span>GitHub repo</span>
+            <span>GitHub</span>
           </a>
         </span>
       </div>
@@ -270,20 +218,36 @@
 </section>
 
 
-<!-- Teaser video-->
+<!-- Demo video -->
 <section class="hero teaser" id="frontend-demo">
   <div class="container is-max-desktop">
     <div class="hero-body">
-      <video poster="" id="tree" autoplay controls muted loop height="100%" preload="metadata">
-        <source src="static/videos/banner_video.mp4" type="video/mp4">
+      <video poster="static/images/demo-poster.png" autoplay controls muted loop height="100%" preload="metadata">
+        <source src="static/videos/demo.mp4" type="video/mp4">
       </video>
-      <h2 class="subtitle has-text-centered">
-        Real-time webcam capture flowing through the CLIP-based translator; replace this clip with a current demo of the Django REST + Bootstrap frontend.
-      </h2>
     </div>
   </div>
 </section>
-<!-- End teaser video -->
+<!-- End demo video -->
+
+
+<!-- Presentation embed -->
+<section class="hero is-small is-light" id="presentation">
+  <div class="hero-body">
+    <div class="container">
+      <h2 class="title is-3">Presentation</h2>
+      <iframe
+        src="https://view.officeapps.live.com/op/embed.aspx?src=https%3A%2F%2Fuillinoisedu-my.sharepoint.com%2F%3Ap%3A%2Fg%2Fpersonal%2Fmadhavt2_illinois_edu%2FIQDhELdSdl3tRbldQ2DwCLBKAT9GvqOhr-wKjIRB_znsCqE%3Fe%3DvuO0f3"
+        width="100%"
+        height="600"
+        frameborder="0"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</section>
+<!-- End presentation embed -->
+
 
 <!-- Overview -->
 <section class="section hero is-light">
