@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <!-- Primary Meta Tags -->
-  <meta name="title" content="TranSlaDoorss: American Sign Language Classification via One-Shot Learning">
+  <meta name="title" content="TranSlaDoorss: American Sign Language Classification via Contrastive Learning">
   <meta name="description" content="Web-based ASL fingerspelling (A–Z) prediction using a CLIP model, served via a Django REST API with a Bootstrap webcam frontend and feedback capture.">
   <meta name="keywords" content="ASL, fingerspelling, CLIP, Django, REST API, Bootstrap, webcam, PyTorch, Hugging Face, feedback">
   <meta name="author" content="Benjamin Vogt, Juno Tripathi, Kelly Shieh, Evelyn Hou">
@@ -15,7 +15,7 @@
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="TranSlaDoorss">
-  <meta property="og:title" content="TranSlaDoorss: American Sign Language Classification via One-Shot Learning">
+  <meta property="og:title" content="TranSlaDoorss: American Sign Language Classification via Contrastive Learning">
   <meta property="og:description" content="Web-based ASL fingerspelling (A–Z) prediction powered by CLIP, Django REST, and a webcam demo with feedback capture.">
   <meta property="og:url" content="http://localhost:8000/">
   <meta property="og:image" content="http://localhost:8000/static/images/carousel1.jpg">
@@ -33,13 +33,13 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="TranSlaDoorss">
   <meta name="twitter:creator" content="TranSlaDoorss">
-  <meta name="twitter:title" content="TranSlaDoorss: American Sign Language Classification via One-Shot Learning">
+  <meta name="twitter:title" content="TranSlaDoorss: American Sign Language Classification via Contrastive Learning">
   <meta name="twitter:description" content="Web-based ASL fingerspelling (A–Z) prediction powered by CLIP, Django REST, and a webcam demo with feedback capture.">
   <meta name="twitter:image" content="http://localhost:8000/static/images/carousel1.jpg">
   <meta name="twitter:image:alt" content="TranSlaDoorss - ASL fingerspelling translator preview">
 
   <!-- Academic/Research Specific -->
-  <meta name="citation_title" content="TranSlaDoorss: American Sign Language Classification via One-Shot Learning">
+  <meta name="citation_title" content="TranSlaDoorss: American Sign Language Classification via Contrastive Learning">
   <meta name="citation_author" content="Benjamin Vogt">
   <meta name="citation_author" content="Juno Tripathi">
   <meta name="citation_author" content="Kelly Shieh">
@@ -62,7 +62,7 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
 
-  <title>TranSlaDoorss: American Sign Language Classification via One-Shot Learning</title>
+  <title>TranSlaDoorss: American Sign Language Classification via Contrastive Learning</title>
   
   <!-- Favicon and App Icons -->
   <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
@@ -165,7 +165,7 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">TranSlaDoorss: American Sign Language Classification via One-Shot Learning</h1>
+            <h1 class="title is-1 publication-title">TranSlaDoorss: American Sign Language Classification via Contrastive Learning</h1>
             <div class="is-size-5 publication-authors">
               <span class="author-block">Benjamin Vogt<sup>1</sup>,</span>
               <span class="author-block"><a href="https://github.com/juniper-halo" target="_blank">Juno Tripathi<sup>1</sup></a>,</span>
@@ -206,7 +206,7 @@
             <span class="icon">
               <i class="fab fa-github"></i>
             </span>
-            <span>GitHub</span>
+            <span>Code</span>
           </a>
         </span>
       </div>
@@ -224,7 +224,11 @@
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
         <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified"></div>
+        <div class="content has-text-justified">
+          <p>
+            Communication barriers remain a significant challenge in creating accessible and inclusive environments for individuals who rely on sign language. As a proof of concept toward reducing these barriers, we study the problem of American Sign Language (ASL) fingerspelling recognition, focusing on the visual classification of individual letters. We propose a vision-based approach using contrastive language–vision models to recognize fingerspelled characters from static images. Using a labeled dataset of approximately 20,000 hand images captured under varied lighting conditions, we fine-tune a CLIP ViT-B/32 model with an 80:20 train–test split. Our fine-tuned model substantially outperforms zero-shot and linear-probe CLIP baselines, achieving near-perfect classification accuracy on the held-out test set. We note that this performance likely reflects limited distributional diversity between training and test data, and therefore interpret these results as demonstrating feasibility rather than robust real-world generalization. Finally, we discuss how this framework may be extended to temporally structured inputs as a step toward continuous fingerspelling recognition.
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -373,7 +377,7 @@
     <div class="container">
       <h2 class="title">Repo &amp; setup notes</h2>
       <div class="content">
-        <p>Repository: <code>transladoorss-model-dev-env</code> (<a href="https://github.com/juniper-halo/TranSlaDoorss.git" target="_blank">GitHub</a>). In DEBUG, Django serves <code>frontend/index.html</code> plus static <code>/js</code>, <code>/css</code>, <code>/assets</code>, and <code>/media</code> (uploads under <code>backend/feedback_images</code>).</p>
+        <p>Repository: <code>transladoorss-model-dev-env</code> (<a href="https://github.com/juniper-halo/TranSlaDoorss.git" target="_blank">Code</a>). In DEBUG, Django serves <code>frontend/index.html</code> plus static <code>/js</code>, <code>/css</code>, <code>/assets</code>, and <code>/media</code> (uploads under <code>backend/feedback_images</code>).</p>
         <ul>
           <li>Frontend: static Bootstrap + vanilla JS (webcam capture, fetch to API); Jest tests in <code>frontend/tests/scripts.test.js</code>.</li>
           <li>Backend: Django + DRF; pytest/pytest-django cover API behaviors. MEDIA_ROOT switches to a temp dir during tests.</li>
