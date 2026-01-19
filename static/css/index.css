@@ -750,10 +750,23 @@ a:focus {
     animation: none;
   }
   
-  .button {
-    background: transparent !important;
-    color: var(--text-primary) !important;
-    box-shadow: none !important;
+.button {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+  box-shadow: none !important;
+  }
+}
+
+/* Responsive presentation frame sizing */
+.presentation-frame {
+  width: 100%;
+  height: 80vh;
+  min-height: 480px;
+}
+
+@media screen and (max-width: 768px) {
+  .presentation-frame {
+    height: 70vh;
   }
 }
 
@@ -818,4 +831,3 @@ a:focus {
     color: var(--text-primary) !important;
   }
 }
-
