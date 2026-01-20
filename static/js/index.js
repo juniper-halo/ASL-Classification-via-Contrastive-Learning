@@ -6,7 +6,15 @@ window.HELP_IMPROVE_VIDEOJS = false;
 const resultsData = {
     test: { accuracy: 0.00, macroF1: 0.00, top5: 0.00, ece: 0.00, latencyMs: 0.0, throughput: 0.0 },
     dataset: { name: "HF ASL Dataset", split: "test", isOOD: false },
-    validationBest: { epoch: 0, accuracy: 0.00, macroF1: 0.00 },
+    validationBest: {
+        epoch: 9,
+        accuracy: 0.98697,
+        macroF1: 0.98698,
+        loss: 0.04477,
+        throughput: 10.56,
+        samples: "833/844",
+        classes: 24
+    },
     baselines: [
         { name: "Zero-shot CLIP", accuracy: 0.00, macroF1: 0.00 },
         { name: "Linear-probe CLIP", accuracy: 0.00, macroF1: 0.00 },
@@ -21,7 +29,7 @@ const resultsData = {
         bins: [0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95],
         accuracy: null,
         confidence: null,
-        ece: 0.00
+        ece: 0.00637
     }
     // optional:
     // ood: { dataset: { name: "Kaggle ASL Alphabet", split: "test", isOOD: true }, test: {...} }
@@ -383,6 +391,10 @@ function renderResults(data) {
     setText('val-acc', formatPercent(data.validationBest.accuracy));
     setText('val-f1', formatPercent(data.validationBest.macroF1));
     setText('val-epoch', data.validationBest.epoch.toString());
+    setText('val-loss', data.validationBest.loss.toFixed(5));
+    setText('val-throughput', `${data.validationBest.throughput.toFixed(2)} samples/sec`);
+    setText('val-samples', data.validationBest.samples);
+    setText('val-classes', data.validationBest.classes.toString());
     setText('test-acc', formatPercent(data.test.accuracy));
     setText('test-f1', formatPercent(data.test.macroF1));
 
