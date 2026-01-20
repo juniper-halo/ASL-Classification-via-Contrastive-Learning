@@ -393,7 +393,47 @@ function renderConfusionAndCalibration(data) {
     requestAnimationFrame(tick);
 }
 
-function revealResultsSection() {
+async function loadResultsFiles(data) {
+    const updates = {};
+
+    try {
+        const response = await fetch('static/results/validation_epoch_9_confusion_matrix.json');
+        if (response.ok) {
+            const payload = await response.json();
+            updates.confusion = {
+                labels: payload.labels || data.confusion.labels,
+                matrix: payload.matrix || data.confusion.matrix,
+                mostConfusedPairs: data.confusion.mostConfusedPairs
+            };
+        }
+    } catch (err) {
+        console.warn('Confusion matrix JSON unavailable, using stub data.', err);
+    }
+
+    try {
+        const response = await fetch('static/results/validation_epoch_9_ece.json');
+        if (response.ok) {
+            const payload = await response.json();
+            updates.calibration = {
+                bins: payload.bins || data.calibration.bins,
+                accuracy: payload.accuracy || data.calibration.accuracy,
+                confidence: payload.confidence || data.calibration.confidence,
+                ece: typeof payload.ece === 'number' ? payload.ece : data.calibration.ece
+            };
+        }
+    } catch (err) {
+        console.warn('Calibration JSON unavailable, using stub data.', err);
+    }
+
+    return {
+        ...data,
+        ...updates,
+        confusion: updates.confusion || data.confusion,
+        calibration: updates.calibration || data.calibration
+    };
+}
+
+function revealResultsSection(data) {
     const section = document.getElementById('results');
     if (!section) return;
 
@@ -405,11 +445,10 @@ function revealResultsSection() {
         table.classList.add('is-highlighted');
     }
 
-    animateMetricCards(resultsData);
+    animateMetricCards(data);
     animateBars();
-    animateValidationDelta(resultsData);
-    animateCalibration(resultsData);
-    renderConfusionAndCalibration(resultsData);
+    animateValidationDelta(data);
+    animateCalibration(data);
 }
 
 // Copy BibTeX to clipboard
@@ -518,5 +557,10 @@ $(document).ready(function() {
     renderResults(resultsData);
 
     const resultsSection = document.getElementById('results');
-    animateOnceWhenVisible(resultsSection, revealResultsSection);
+    animateOnceWhenVisible(resultsSection, async () => {
+        const merged = await loadResultsFiles(resultsData);
+        renderResults(merged);
+        revealResultsSection(merged);
+        renderConfusionAndCalibration(merged);
+    });
 })
