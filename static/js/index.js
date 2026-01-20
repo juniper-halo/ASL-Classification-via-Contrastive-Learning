@@ -35,56 +35,6 @@ const resultsData = {
     // ood: { dataset: { name: "Kaggle ASL Alphabet", split: "test", isOOD: true }, test: {...} }
 };
 
-function prefersReducedMotion() {
-    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-}
-
-function easeOutCubic(t) {
-    return 1 - Math.pow(1 - t, 3);
-}
-
-function animateNumber(el, from, to, duration, formatFn) {
-    if (!el) return;
-    if (prefersReducedMotion()) {
-        el.textContent = formatFn(to);
-        return;
-    }
-
-    const start = performance.now();
-
-    function tick(now) {
-        const elapsed = Math.min((now - start) / duration, 1);
-        const eased = easeOutCubic(elapsed);
-        const value = from + (to - from) * eased;
-        el.textContent = formatFn(value);
-
-        if (elapsed < 1) {
-            requestAnimationFrame(tick);
-        }
-    }
-
-    requestAnimationFrame(tick);
-}
-
-function animateOnceWhenVisible(sectionEl, callback) {
-    if (!sectionEl || typeof callback !== 'function') return;
-    if (prefersReducedMotion()) {
-        callback();
-        return;
-    }
-
-    const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                callback();
-                obs.disconnect();
-            }
-        });
-    }, { threshold: 0.2 });
-
-    observer.observe(sectionEl);
-}
-
 function formatPercent(value) {
     if (typeof value !== 'number') return '0.00';
     return (value * 100).toFixed(2) + '%';
@@ -116,15 +66,15 @@ function renderBaselineChart(baselines) {
         const accBar = document.createElement('div');
         accBar.className = 'bar bar-acc';
         accBar.style.setProperty('--bar-width', (baseline.accuracy * 100).toFixed(1) + '%');
-        accBar.style.width = prefersReducedMotion() ? accBar.style.getPropertyValue('--bar-width') : '0%';
-        accBar.style.opacity = prefersReducedMotion() ? '1' : '0';
+        accBar.style.width = accBar.style.getPropertyValue('--bar-width');
+        accBar.style.opacity = '1';
         accBar.textContent = formatPercent(baseline.accuracy);
 
         const f1Bar = document.createElement('div');
         f1Bar.className = 'bar bar-f1';
         f1Bar.style.setProperty('--bar-width', (baseline.macroF1 * 100).toFixed(1) + '%');
-        f1Bar.style.width = prefersReducedMotion() ? f1Bar.style.getPropertyValue('--bar-width') : '0%';
-        f1Bar.style.opacity = prefersReducedMotion() ? '1' : '0';
+        f1Bar.style.width = f1Bar.style.getPropertyValue('--bar-width');
+        f1Bar.style.opacity = '1';
         f1Bar.textContent = formatPercent(baseline.macroF1);
 
         bars.appendChild(accBar);
@@ -421,65 +371,6 @@ function renderResults(data) {
     }
 }
 
-function animateBars() {
-    const bars = document.querySelectorAll('#baseline-chart .bar');
-    bars.forEach((bar) => {
-        bar.classList.remove('is-animated');
-    });
-    requestAnimationFrame(() => {
-        bars.forEach((bar) => {
-            bar.classList.add('is-animated');
-            bar.style.opacity = '1';
-        });
-    });
-}
-
-function animateValidationDelta(data) {
-    const valAcc = document.getElementById('val-acc');
-    const testAcc = document.getElementById('test-acc');
-    if (!valAcc || !testAcc) return;
-
-    const delta = (data.test.accuracy - data.validationBest.accuracy) * 100;
-    if (!testAcc.parentElement.querySelector('.delta-annotation')) {
-        const deltaEl = document.createElement('span');
-        deltaEl.className = 'delta-annotation';
-        deltaEl.textContent = `Δ ${delta.toFixed(2)}%`;
-        testAcc.parentElement.appendChild(deltaEl);
-
-        if (prefersReducedMotion()) {
-            deltaEl.classList.add('is-visible');
-        } else {
-            setTimeout(() => {
-                deltaEl.classList.add('is-visible');
-            }, 900);
-        }
-    }
-}
-
-function animateMetricCards(data) {
-    animateNumber(document.getElementById('metric-test-acc'), 0, data.test.accuracy, 900, formatPercent);
-    animateNumber(document.getElementById('metric-test-f1'), 0, data.test.macroF1, 900, formatPercent);
-    animateNumber(document.getElementById('metric-test-top5'), 0, data.test.top5, 900, formatPercent);
-    animateNumber(document.getElementById('metric-test-ece'), 0, data.test.ece, 900, formatEce);
-
-    if (data.test.latencyMs && data.test.latencyMs > 0) {
-        animateNumber(document.getElementById('metric-throughput'), 0, data.test.latencyMs, 900, formatLatency);
-    } else {
-        animateNumber(document.getElementById('metric-throughput'), 0, data.test.throughput, 900, formatThroughput);
-    }
-
-    if (data.ood) {
-        animateNumber(document.getElementById('ood-acc'), 0, data.ood.test.accuracy, 900, formatPercent);
-        animateNumber(document.getElementById('ood-top5'), 0, data.ood.test.top5, 900, formatPercent);
-        animateNumber(document.getElementById('ood-f1'), 0, data.ood.test.macroF1, 900, formatPercent);
-        animateNumber(document.getElementById('ood-ece'), 0, data.ood.test.ece, 900, formatEce);
-    }
-}
-
-function animateCalibration(data) {
-    animateNumber(document.getElementById('calibration-ece'), 0, data.calibration.ece, 900, formatEce);
-}
-
 function renderConfusionAndCalibration(data) {
     const matrix = data.confusion.matrix || generateRandomMatrix(data.confusion.labels.length);
     const bins = data.calibration.bins;
@@ -491,30 +382,18 @@ function renderConfusionAndCalibration(data) {
     const calibrationCanvas = document.getElementById('calibration-canvas');
     const confusionTooltip = document.getElementById('confusion-tooltip');
     const calibrationTooltip = document.getElementById('calibration-tooltip');
-    const duration = prefersReducedMotion() ? 1 : 900;
-    const start = performance.now();
 
-    function tick(now) {
-        const elapsed = Math.min((now - start) / duration, 1);
-        const eased = prefersReducedMotion() ? 1 : easeOutCubic(elapsed);
-        drawConfusionMatrix(confusionCanvas, data.confusion.labels, matrix, eased);
-        drawCalibrationCurve(calibrationCanvas, bins, accuracy, confidence, eased);
+    drawConfusionMatrix(confusionCanvas, data.confusion.labels, matrix, 1);
+    drawCalibrationCurve(calibrationCanvas, bins, accuracy, confidence, 1);
 
-        if (elapsed < 1) {
-            requestAnimationFrame(tick);
-        } else {
-            if (!confusionCanvas.dataset.hoverBound) {
-                attachConfusionHover(confusionCanvas, confusionTooltip, data);
-                confusionCanvas.dataset.hoverBound = 'true';
-            }
-            if (!calibrationCanvas.dataset.hoverBound) {
-                attachCalibrationHover(calibrationCanvas, calibrationTooltip, data);
-                calibrationCanvas.dataset.hoverBound = 'true';
-            }
-        }
+    if (!confusionCanvas.dataset.hoverBound) {
+        attachConfusionHover(confusionCanvas, confusionTooltip, data);
+        confusionCanvas.dataset.hoverBound = 'true';
     }
-
-    requestAnimationFrame(tick);
+    if (!calibrationCanvas.dataset.hoverBound) {
+        attachCalibrationHover(calibrationCanvas, calibrationTooltip, data);
+        calibrationCanvas.dataset.hoverBound = 'true';
+    }
 }
 
 async function loadResultsFiles(data) {
@@ -557,23 +436,6 @@ async function loadResultsFiles(data) {
     };
 }
 
-function revealResultsSection(data) {
-    const section = document.getElementById('results');
-    if (!section) return;
-
-    const revealTargets = section.querySelectorAll('.reveal-on-scroll');
-    revealTargets.forEach((el) => el.classList.add('is-visible'));
-
-    const table = section.querySelector('.results-table');
-    if (table) {
-        table.classList.add('is-highlighted');
-    }
-
-    animateMetricCards(data);
-    animateBars();
-    animateValidationDelta(data);
-    animateCalibration(data);
-}
 
 // Copy BibTeX to clipboard
 function copyBibTeX() {
@@ -680,11 +542,9 @@ $(document).ready(function() {
 
     renderResults(resultsData);
 
-    const resultsSection = document.getElementById('results');
-    animateOnceWhenVisible(resultsSection, async () => {
-        const merged = await loadResultsFiles(resultsData);
+    renderConfusionAndCalibration(resultsData);
+    loadResultsFiles(resultsData).then((merged) => {
         renderResults(merged);
-        revealResultsSection(merged);
         renderConfusionAndCalibration(merged);
     });
 })

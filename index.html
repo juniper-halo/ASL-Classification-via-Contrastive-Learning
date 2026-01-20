@@ -326,7 +326,7 @@
           </p>
 
           <h3>Headline metrics</h3>
-          <div class="columns is-multiline results-cards reveal-on-scroll">
+          <div class="columns is-multiline results-cards">
             <div class="column is-one-third">
               <div class="card metric-card">
                 <div class="card-content">
@@ -381,7 +381,7 @@
           </div>
 
           <h3>Baseline comparison</h3>
-          <div class="bar-chart reveal-on-scroll" id="baseline-chart">
+          <div class="bar-chart" id="baseline-chart">
             <div class="bar-legend">
               <span class="legend-item"><span class="legend-swatch legend-acc"></span>Top-1 Accuracy</span>
               <span class="legend-item"><span class="legend-swatch legend-f1"></span>Macro F1</span>
@@ -390,7 +390,7 @@
           </div>
 
           <h3>Validation vs Test</h3>
-          <div class="table-container reveal-on-scroll">
+          <div class="table-container">
             <table class="table is-fullwidth results-table">
               <thead>
                 <tr>
@@ -430,7 +430,7 @@
           </div>
 
           <h3>Confusion matrix</h3>
-          <div class="columns is-vcentered reveal-on-scroll">
+          <div class="columns is-vcentered">
             <div class="column is-half">
               <div class="results-canvas-wrap">
                 <canvas id="confusion-canvas" class="results-canvas results-canvas--square" aria-label="Confusion matrix"></canvas>
@@ -445,7 +445,7 @@
           </div>
 
           <h3>Calibration</h3>
-          <div class="columns is-vcentered reveal-on-scroll">
+          <div class="columns is-vcentered">
             <div class="column is-half">
               <div class="results-canvas-wrap">
                 <canvas id="calibration-canvas" class="results-canvas results-canvas--wide" aria-label="Calibration curve"></canvas>
@@ -459,7 +459,7 @@
             </div>
           </div>
 
-          <div id="ood-results" class="ood-section reveal-on-scroll">
+          <div id="ood-results" class="ood-section">
             <h3>Cross-dataset generalization</h3>
             <p class="ood-note">
               OOD metrics highlight performance under domain shift and should be interpreted relative to in-dataset results.
