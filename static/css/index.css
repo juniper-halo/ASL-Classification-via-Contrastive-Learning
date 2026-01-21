@@ -404,23 +404,23 @@ body {
 .dataset-chip {
   display: inline-flex;
   align-items: center;
-  padding: 0.3rem 0.7rem;
+  padding: 0.4rem 0.9rem;
   border-radius: 999px;
-  border: 1px solid rgba(239, 68, 68, 0.55);
-  background: rgba(239, 68, 68, 0.14);
-  color: #fda4af;
+  border: 1px solid rgba(239, 68, 68, 0.7);
+  background: rgba(239, 68, 68, 0.16);
+  color: #fef2f2;
   text-decoration: none;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.25), 0 0 0 1px rgba(239, 68, 68, 0.2);
+  box-shadow: 0 12px 24px rgba(239, 68, 68, 0.3), 0 0 0 1px rgba(239, 68, 68, 0.35);
   white-space: nowrap;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0;
 }
 
 .dataset-chip:hover {
   color: #fff;
   background: rgba(239, 68, 68, 0.32);
-  border-color: rgba(239, 68, 68, 0.8);
+  border-color: rgba(239, 68, 68, 0.9);
 }
 
 .analysis-heading {
