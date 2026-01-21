@@ -406,20 +406,21 @@ body {
   align-items: center;
   padding: 0.35rem 0.65rem;
   border-radius: 999px;
-  border: 1px solid var(--border-color);
-  background: var(--background-accent);
-  color: var(--text-primary);
+  border: 1px solid color-mix(in srgb, #ef4444 55%, var(--border-color));
+  background: color-mix(in srgb, #ef4444 18%, transparent);
+  color: color-mix(in srgb, #ef4444 70%, var(--text-primary));
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 600;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.25), 0 0 0 1px color-mix(in srgb, #ef4444 30%, transparent);
   white-space: nowrap;
   margin-bottom: 0.75rem;
 }
 
 .dataset-chip-inline:hover {
-  color: var(--primary-color);
-  border-color: color-mix(in srgb, var(--primary-color) 60%, var(--border-color));
+  color: #fff;
+  background: color-mix(in srgb, #ef4444 35%, var(--background-accent));
+  border-color: color-mix(in srgb, #ef4444 70%, var(--border-color));
 }
 
 .analysis-heading {
