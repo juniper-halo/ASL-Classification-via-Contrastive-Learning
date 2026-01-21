@@ -45,7 +45,7 @@ const resultsData = {
     validationBest: {},
     baselines: [
         { name: "Zero-shot CLIP", accuracy: 0.05389496918973604, macroF1: 0.04742928628000638 },
-        { name: "Linear-probe CLIP", accuracy: 0, macroF1: 0 },
+        { name: "Linear-probe CLIP", accuracy: 0, macroF1: 0, comingSoon: true },
         { name: "Fine-tuned (Ours)", accuracy: 0, macroF1: 0 }
     ]
     // optional:
@@ -481,7 +481,7 @@ async function loadResultsFiles(data) {
             const zsMacro = toNumber(detailed.macro_f1);
             updated.baselines = [
                 { name: "Zero-shot CLIP", accuracy: zsAcc, macroF1: zsMacro },
-                { name: "Linear-probe CLIP (coming soon)", accuracy: 0, macroF1: 0 }
+                { name: "Linear-probe CLIP", accuracy: 0, macroF1: 0 }
             ];
         }
     } catch (err) {
@@ -581,7 +581,7 @@ async function loadResultsFiles(data) {
             updated.baselines = [
                 zeroShot,
                 { name: "Fine tuned", accuracy: updated.test.accuracy ?? 0, macroF1: updated.test.macroF1 ?? 0 },
-                { name: "Linear-probe CLIP (coming soon)", accuracy: 0, macroF1: 0 }
+                { name: "Linear-probe CLIP", accuracy: 0, macroF1: 0 }
             ];
         }
     } catch (err) {
