@@ -439,7 +439,7 @@ function renderConfusionAndCalibration(data) {
     ];
     calibrationTargets.forEach(({ canvas, tooltip, bins, accuracy, confidence, fallback }) => {
         if (!canvas) return;
-        drawCalibrationCurve(canvas, bins, accuracy, confidence, 1);
+        drawCalibrationCurve(canvas, bins && bins.length ? bins : defaultBins, accuracy, confidence, 1);
         if (!canvas.dataset.hoverBound) {
             attachCalibrationHover(canvas, tooltip, { calibration: { bins, accuracy, confidence } });
             canvas.dataset.hoverBound = 'true';
@@ -499,22 +499,22 @@ async function loadResultsFiles(data) {
             const valTotal = toNumber(basic.total_predictions);
 
             updated.validation = {
-                accuracy: toNumber(basic.top1_accuracy ?? basic.accuracy),
-                macroF1: toNumber(detailed.macro_f1),
-                microF1: toNumber(detailed.micro_f1 ?? basic.accuracy),
-                top5: toNumber(basic.topk_accuracy),
-                ece: toNumber(cal.ece),
+                accuracy: toNumber(basic.top1_accuracy ?? basic.accuracy, updated.validation.accuracy),
+                macroF1: toNumber(detailed.macro_f1, updated.validation.macroF1),
+                microF1: toNumber(detailed.micro_f1 ?? basic.accuracy, updated.validation.microF1),
+                top5: toNumber(basic.topk_accuracy, updated.validation.top5),
+                ece: toNumber(cal.ece, updated.validation.ece),
                 latencyMs: null,
-                throughput: toNumber(basic.samples_per_second),
-                samples: `${valCorrect}/${valTotal}`,
+                throughput: toNumber(basic.samples_per_second, updated.validation.throughput),
+                samples: `${valCorrect || 0}/${valTotal || 0}`,
                 confusion: {
                     labels,
-                    matrix: Array.isArray(matrix) ? matrix : updated.validation.confusion.matrix
+                    matrix: Array.isArray(matrix) ? matrix : createPlaceholderMatrix(labels.length || defaultLabels.length)
                 },
                 calibration: {
                     bins,
-                    accuracy: Array.isArray(cal.bin_accuracy) ? cal.bin_accuracy : updated.validation.calibration.accuracy,
-                    confidence: Array.isArray(cal.bin_confidence) ? cal.bin_confidence : updated.validation.calibration.confidence,
+                    accuracy: Array.isArray(cal.bin_accuracy) ? cal.bin_accuracy : createCalibrationFallback(bins).accuracy,
+                    confidence: Array.isArray(cal.bin_confidence) ? cal.bin_confidence : createCalibrationFallback(bins).confidence,
                     ece: typeof cal.ece === 'number' ? cal.ece : updated.validation.calibration.ece
                 },
                 isOOD: false,
@@ -544,22 +544,22 @@ async function loadResultsFiles(data) {
             const { bins, fallback: binsFallback } = deriveBins(cal, updated.test.calibration.bins);
 
             updated.test = {
-                accuracy: toNumber(basic.top1_accuracy ?? basic.accuracy),
-                macroF1: toNumber(detailed.macro_f1),
-                microF1: toNumber(detailed.micro_f1 ?? basic.accuracy),
-                top5: toNumber(basic.topk_accuracy),
-                ece: toNumber(cal.ece),
+                accuracy: toNumber(basic.top1_accuracy ?? basic.accuracy, updated.test.accuracy),
+                macroF1: toNumber(detailed.macro_f1, updated.test.macroF1),
+                microF1: toNumber(detailed.micro_f1 ?? basic.accuracy, updated.test.microF1),
+                top5: toNumber(basic.topk_accuracy, updated.test.top5),
+                ece: toNumber(cal.ece, updated.test.ece),
                 latencyMs: null,
-                throughput: toNumber(basic.samples_per_second),
+                throughput: toNumber(basic.samples_per_second, updated.test.throughput),
                 samples: `${basic.correct_predictions ?? 0}/${basic.total_predictions ?? 0}`,
                 confusion: {
                     labels,
-                    matrix: Array.isArray(matrix) ? matrix : updated.test.confusion.matrix
+                    matrix: Array.isArray(matrix) ? matrix : createPlaceholderMatrix(labels.length || defaultLabels.length)
                 },
                 calibration: {
                     bins,
-                    accuracy: Array.isArray(cal.bin_accuracy) ? cal.bin_accuracy : updated.test.calibration.accuracy,
-                    confidence: Array.isArray(cal.bin_confidence) ? cal.bin_confidence : updated.test.calibration.confidence,
+                    accuracy: Array.isArray(cal.bin_accuracy) ? cal.bin_accuracy : createCalibrationFallback(bins).accuracy,
+                    confidence: Array.isArray(cal.bin_confidence) ? cal.bin_confidence : createCalibrationFallback(bins).confidence,
                     ece: typeof cal.ece === 'number' ? cal.ece : updated.test.calibration.ece
                 },
                 isOOD: true,
