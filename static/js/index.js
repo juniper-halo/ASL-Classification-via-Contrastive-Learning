@@ -1,7 +1,45 @@
 // TODO: fetch static/data/test_metrics.json and map evaluator outputs into resultsData.
 const resultsData = {
-    test: { accuracy: 0.00, macroF1: 0.00, top5: 0.00, ece: 0.00, latencyMs: 0.0, throughput: 0.0 },
-    dataset: { name: "Dataset", split: "test", isOOD: false },
+    validation: {
+        accuracy: 0.21,
+        macroF1: 0.24,
+        microF1: 0.22,
+        top5: 0.55,
+        ece: 0.12,
+        latencyMs: null,
+        throughput: 12.3,
+        samples: "120/560",
+        confusion: {
+            labels: ["A","B","C","D","E","F","G","H"],
+            matrix: null
+        },
+        calibration: {
+            bins: [0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95],
+            accuracy: null,
+            confidence: null,
+            ece: 0.12
+        }
+    },
+    test: {
+        accuracy: 0.36,
+        macroF1: 0.33,
+        microF1: 0.34,
+        top5: 0.62,
+        ece: 0.29,
+        latencyMs: null,
+        throughput: 16.0,
+        samples: "3380/10033",
+        confusion: {
+            labels: ["A","B","C","D","E","F","G","H"],
+            matrix: null
+        },
+        calibration: {
+            bins: [0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95],
+            accuracy: null,
+            confidence: null,
+            ece: 0.29
+        }
+    },
     validationBest: {
         epoch: 9,
         accuracy: 0.98697,
@@ -15,18 +53,7 @@ const resultsData = {
         { name: "Zero-shot CLIP", accuracy: 0.00, macroF1: 0.00 },
         { name: "Linear-probe CLIP", accuracy: 0.00, macroF1: 0.00 },
         { name: "Fine-tuned (Ours)", accuracy: 0.00, macroF1: 0.00 }
-    ],
-    confusion: {
-        labels: ["A","B","C","D","E","F","G","H"],
-        matrix: null,
-        mostConfusedPairs: []
-    },
-    calibration: {
-        bins: [0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95],
-        accuracy: null,
-        confidence: null,
-        ece: 0.00
-    }
+    ]
     // optional:
     // ood: { dataset: { name: "Kaggle ASL Alphabet", split: "test", isOOD: true }, test: {...} }
 };
@@ -311,31 +338,33 @@ function formatThroughput(value) {
 function renderResults(data) {
     if (!data) return;
 
-    setText('metric-validate-top1', formatPercent(data.test.accuracy));
-    setText('macro-validate-f1', formatPercent(data.test.macroF1));
-    setText('micro-validate-f1', formatPercent(data.test.microF1 ?? data.test.accuracy ?? 0));
-    setText('metric-validate-top5', formatPercent(data.test.top5));
-    setText('metric-test-top1', formatPercent(data.test.accuracy));
-    setText('macro-test-f1', formatPercent(data.test.macroF1));
-    setText('micro-test-f1', formatPercent(data.test.microF1 ?? data.test.accuracy ?? 0));
-    setText('metric-test-top5', formatPercent(data.test.top5));
-    setText('metric-validate-ece', formatEce(data.test.ece));
-    setText('metric-test-ece', formatEce(data.test.ece));
+    const val = data.validation || {};
+    const tst = data.test || {};
 
-    const throughputValue = data.test.latencyMs && data.test.latencyMs > 0
-        ? formatLatency(data.test.latencyMs)
-        : formatThroughput(data.test.throughput);
-    if (data.test.latencyMs && data.test.latencyMs > 0) {
-        setText('metric-validate-throughput', throughputValue);
-        setText('metric-test-throughput', throughputValue);
-    } else {
-        setText('metric-validate-throughput', throughputValue);
-        setText('metric-test-throughput', throughputValue);
-    }
+    setText('metric-validate-top1', formatPercent(val.accuracy));
+    setText('macro-validate-f1', formatPercent(val.macroF1));
+    setText('micro-validate-f1', formatPercent(val.microF1 ?? val.accuracy ?? 0));
+    setText('metric-validate-top5', formatPercent(val.top5));
+    setText('metric-validate-ece', formatEce(val.ece));
 
-    const samplesLabel = data.test.samples || '0 / 0';
-    setText('metric-validate-samples', samplesLabel);
-    setText('metric-test-samples', samplesLabel);
+    setText('metric-test-top1', formatPercent(tst.accuracy));
+    setText('macro-test-f1', formatPercent(tst.macroF1));
+    setText('micro-test-f1', formatPercent(tst.microF1 ?? tst.accuracy ?? 0));
+    setText('metric-test-top5', formatPercent(tst.top5));
+    setText('metric-test-ece', formatEce(tst.ece));
+
+    const valThroughput = val.latencyMs && val.latencyMs > 0
+        ? formatLatency(val.latencyMs)
+        : formatThroughput(val.throughput);
+    const testThroughput = tst.latencyMs && tst.latencyMs > 0
+        ? formatLatency(tst.latencyMs)
+        : formatThroughput(tst.throughput);
+
+    setText('metric-validate-throughput', valThroughput);
+    setText('metric-test-throughput', testThroughput);
+
+    setText('metric-validate-samples', val.samples || '0 / 0');
+    setText('metric-test-samples', tst.samples || '0 / 0');
 
     renderBaselineChart(data.baselines || []);
 
@@ -371,32 +400,47 @@ function renderResults(data) {
 }
 
 function renderConfusionAndCalibration(data) {
-    const matrix = Array.isArray(data.confusion.matrix)
-        ? data.confusion.matrix
-        : createPlaceholderMatrix(data.confusion.labels.length);
-    const bins = data.calibration.bins;
-    const fallback = createCalibrationFallback(bins);
-    const accuracy = Array.isArray(data.calibration.accuracy) ? data.calibration.accuracy : fallback.accuracy;
-    const confidence = Array.isArray(data.calibration.confidence) ? data.calibration.confidence : fallback.confidence;
+    const valConf = val.confusion || {};
+    const testConf = tst.confusion || {};
+    const defaultLabels = ["A","B","C","D","E","F","G","H"];
+    const valLabels = Array.isArray(valConf.labels) && valConf.labels.length ? valConf.labels : defaultLabels;
+    const testLabels = Array.isArray(testConf.labels) && testConf.labels.length ? testConf.labels : defaultLabels;
+    const valMatrix = Array.isArray(valConf.matrix)
+        ? valConf.matrix
+        : createPlaceholderMatrix(valLabels.length || 1);
+    const testMatrix = Array.isArray(testConf.matrix)
+        ? testConf.matrix
+        : createPlaceholderMatrix(testLabels.length || 1);
+
+    const valCal = val.calibration || {};
+    const testCal = tst.calibration || {};
+    const valBins = valCal.bins || [];
+    const testBins = testCal.bins || [];
+    const valFallback = createCalibrationFallback(valBins);
+    const testFallback = createCalibrationFallback(testBins);
+    const valAcc = Array.isArray(valCal.accuracy) ? valCal.accuracy : valFallback.accuracy;
+    const valConfArr = Array.isArray(valCal.confidence) ? valCal.confidence : valFallback.confidence;
+    const testAcc = Array.isArray(testCal.accuracy) ? testCal.accuracy : testFallback.accuracy;
+    const testConfArr = Array.isArray(testCal.confidence) ? testCal.confidence : testFallback.confidence;
 
     const confusionTargets = [
-        { canvas: document.getElementById('confusion-canvas'), tooltip: document.getElementById('confusion-tooltip') },
-        { canvas: document.getElementById('confusion-test-canvas'), tooltip: document.getElementById('confusion-test-tooltip') }
+        { canvas: document.getElementById('confusion-canvas'), tooltip: document.getElementById('confusion-tooltip'), labels: valLabels, matrix: valMatrix },
+        { canvas: document.getElementById('confusion-test-canvas'), tooltip: document.getElementById('confusion-test-tooltip'), labels: testLabels, matrix: testMatrix }
     ];
-    confusionTargets.forEach(({ canvas, tooltip }) => {
+    confusionTargets.forEach(({ canvas, tooltip, labels, matrix }) => {
         if (!canvas) return;
-        drawConfusionMatrix(canvas, data.confusion.labels, matrix, 1);
+        drawConfusionMatrix(canvas, labels, matrix, 1);
         if (!canvas.dataset.hoverBound) {
-            attachConfusionHover(canvas, tooltip, data);
+            attachConfusionHover(canvas, tooltip, { confusion: { labels, matrix } });
             canvas.dataset.hoverBound = 'true';
         }
     });
 
     const calibrationTargets = [
-        { canvas: document.getElementById('calibration-canvas'), tooltip: document.getElementById('calibration-tooltip') },
-        { canvas: document.getElementById('calibration-test-canvas'), tooltip: document.getElementById('calibration-test-tooltip') }
+        { canvas: document.getElementById('calibration-canvas'), tooltip: document.getElementById('calibration-tooltip'), bins: valBins, accuracy: valAcc, confidence: valConfArr },
+        { canvas: document.getElementById('calibration-test-canvas'), tooltip: document.getElementById('calibration-test-tooltip'), bins: testBins, accuracy: testAcc, confidence: testConfArr }
     ];
-    calibrationTargets.forEach(({ canvas, tooltip }) => {
+    calibrationTargets.forEach(({ canvas, tooltip, bins, accuracy, confidence }) => {
         if (!canvas) return;
         drawCalibrationCurve(canvas, bins, accuracy, confidence, 1);
         if (!canvas.dataset.hoverBound) {
@@ -407,8 +451,101 @@ function renderConfusionAndCalibration(data) {
 }
 
 async function loadResultsFiles(data) {
-    // No external metrics are loaded; keep the UI on stub data.
-    return data;
+    const updated = { ...data };
+
+    try {
+        const response = await fetch('static/results/validate_20260121_050345_dashboard.json');
+        if (response.ok) {
+            const payload = await response.json();
+            const basic = payload.basic_evaluation || {};
+            const detailed = payload.detailed_analysis || {};
+            const cal = detailed.calibration || {};
+
+            const labels = detailed.per_letter_performance
+                ? Object.keys(detailed.per_letter_performance)
+                : updated.validation.confusion.labels;
+            const matrix = detailed.confusion_matrix_normalized || detailed.confusion_matrix;
+
+            const binEdges = Array.isArray(cal.bin_edges) ? cal.bin_edges : [];
+            const bins = Array.isArray(cal.bin_confidence) && cal.bin_confidence.length
+                ? cal.bin_confidence
+                : (binEdges.length > 1
+                    ? binEdges.slice(0, -1).map((start, idx) => (start + binEdges[idx + 1]) / 2)
+                    : updated.validation.calibration.bins);
+
+            updated.validation = {
+                accuracy: basic.top1_accuracy ?? basic.accuracy,
+                macroF1: detailed.macro_f1,
+                microF1: detailed.micro_f1,
+                top5: basic.topk_accuracy,
+                ece: cal.ece,
+                latencyMs: null,
+                throughput: basic.samples_per_second,
+                samples: `${basic.correct_predictions ?? 0}/${basic.total_predictions ?? 0}`,
+                confusion: {
+                    labels,
+                    matrix: Array.isArray(matrix) ? matrix : updated.validation.confusion.matrix
+                },
+                calibration: {
+                    bins,
+                    accuracy: Array.isArray(cal.bin_accuracy) ? cal.bin_accuracy : updated.validation.calibration.accuracy,
+                    confidence: Array.isArray(cal.bin_confidence) ? cal.bin_confidence : updated.validation.calibration.confidence,
+                    ece: typeof cal.ece === 'number' ? cal.ece : updated.validation.calibration.ece
+                },
+                isOOD: false
+            };
+        }
+    } catch (err) {
+        console.warn('Could not load validation JSON, keeping stub data.', err);
+    }
+
+    try {
+        const response = await fetch('static/results/test_20260121_021542_dashboard.json');
+        if (response.ok) {
+            const payload = await response.json();
+            const basic = payload.basic_evaluation || {};
+            const detailed = payload.detailed_analysis || {};
+            const cal = detailed.calibration || {};
+
+            const labels = detailed.per_letter_performance
+                ? Object.keys(detailed.per_letter_performance)
+                : updated.test.confusion.labels;
+            const matrix = detailed.confusion_matrix_normalized || detailed.confusion_matrix;
+
+            const binEdges = Array.isArray(cal.bin_edges) ? cal.bin_edges : [];
+            const bins = Array.isArray(cal.bin_confidence) && cal.bin_confidence.length
+                ? cal.bin_confidence
+                : (binEdges.length > 1
+                    ? binEdges.slice(0, -1).map((start, idx) => (start + binEdges[idx + 1]) / 2)
+                    : updated.test.calibration.bins);
+
+            updated.test = {
+                accuracy: basic.top1_accuracy ?? basic.accuracy,
+                macroF1: detailed.macro_f1,
+                microF1: detailed.micro_f1,
+                top5: basic.topk_accuracy,
+                ece: cal.ece,
+                latencyMs: null,
+                throughput: basic.samples_per_second,
+                samples: `${basic.correct_predictions ?? 0}/${basic.total_predictions ?? 0}`,
+                confusion: {
+                    labels,
+                    matrix: Array.isArray(matrix) ? matrix : updated.test.confusion.matrix
+                },
+                calibration: {
+                    bins,
+                    accuracy: Array.isArray(cal.bin_accuracy) ? cal.bin_accuracy : updated.test.calibration.accuracy,
+                    confidence: Array.isArray(cal.bin_confidence) ? cal.bin_confidence : updated.test.calibration.confidence,
+                    ece: typeof cal.ece === 'number' ? cal.ece : updated.test.calibration.ece
+                },
+                isOOD: true
+            };
+        }
+    } catch (err) {
+        console.warn('Could not load test JSON, keeping stub data.', err);
+    }
+
+    return updated;
 }
 
 
