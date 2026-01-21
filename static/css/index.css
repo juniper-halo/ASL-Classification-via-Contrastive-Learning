@@ -739,3 +739,62 @@ a:focus {
     color: var(--text-primary) !important;
   }
 }
+
+/* Dark-mode-safe defaults for markdown/Bulma/UA elements */
+@media (prefers-color-scheme: dark) {
+  /* Tables: catch-all + Bulma .table + your .results-table */
+  table,
+  .table,
+  .results-table {
+    background: var(--background-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+  }
+
+  table th,
+  table td,
+  .table th,
+  .table td,
+  .results-table th,
+  .results-table td {
+    background: var(--background-primary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+  }
+
+  table thead th,
+  .table thead th,
+  .results-table thead th {
+    background: var(--background-accent);
+    color: var(--text-primary);
+    border-bottom-color: var(--border-color);
+  }
+
+  /* Optional: subtle striping for generic tables */
+  table tbody tr:nth-child(even),
+  .table tbody tr:nth-child(even),
+  .results-table tbody tr:nth-child(even) {
+    background: color-mix(in srgb, var(--background-accent) 25%, var(--background-primary));
+  }
+
+  /* kbd: override Bulma/UA light styling */
+  kbd {
+    background: var(--background-accent);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.1rem 0.35rem;
+    box-shadow: var(--shadow-sm);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  }
+
+  /* blockquote: add surface + accent bar */
+  blockquote {
+    background: var(--background-accent);
+    color: var(--text-primary);
+    border-left: 3px solid var(--primary-color);
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+  }
+}
+
