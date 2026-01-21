@@ -8,7 +8,7 @@ const resultsData = {
         macroF1: 0.98698,
         loss: 0.04477,
         throughput: 10.56,
-        samples: "844",
+        samples: "833/844",
         classes: 24
     },
     baselines: [
@@ -391,6 +391,40 @@ function renderConfusionAndCalibration(data) {
 
 async function loadResultsFiles(data) {
     const updates = {};
+
+    try {
+        const response = await fetch('static/results/test_20260121_013822_dashboard.json');
+        if (response.ok) {
+            const payload = await response.json();
+            const basic = payload.basic_evaluation || {};
+            const detailed = basic.detailed_metrics || {};
+            const cal = detailed.calibration || {};
+            updates.test = {
+                accuracy: basic.accuracy,
+                macroF1: detailed.macro_f1,
+                top5: basic.topk_accuracy,
+                ece: cal.ece,
+                latencyMs: null,
+                throughput: 15.61
+            };
+            updates.dataset = {
+                name: payload.model_id ? `Test (${payload.model_id.split('/').pop()})` : 'Test',
+                split: 'test',
+                isOOD: false
+            };
+
+            const fineTunedAcc = updates.test.accuracy;
+            const fineTunedF1 = updates.test.macroF1;
+            updates.baselines = (data.baselines || []).map((b) => {
+                if (b.name.toLowerCase().includes('fine-tuned')) {
+                    return { ...b, accuracy: fineTunedAcc, macroF1: fineTunedF1 };
+                }
+                return b;
+            });
+        }
+    } catch (err) {
+        console.warn('Test metrics JSON unavailable, using stub data.', err);
+    }
 
     try {
         const response = await fetch('static/results/validation_epoch_9_confusion_matrix.json');
