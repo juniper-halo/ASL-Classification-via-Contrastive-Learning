@@ -3,43 +3,43 @@ const defaultBins = [0.05,0.15,0.25,0.35,0.45,0.55,0.65,0.75,0.85,0.95];
 
 const resultsData = {
     validation: {
-        accuracy: null,
-        macroF1: null,
-        microF1: null,
-        top5: null,
-        ece: null,
+        accuracy: 0.9928909952606635,
+        macroF1: 0.9915850584405499,
+        microF1: 0.9928909952606635,
+        top5: 0.9988151658767772,
+        ece: 0.0028264240772238295,
         latencyMs: null,
-        throughput: null,
-        samples: '-/-',
+        throughput: 16.06,
+        samples: '838/844',
         confusion: {
-            labels: [],
+            labels: ["A","B","C","D","E","F","G","H","I","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y"],
             matrix: null
         },
         calibration: {
             bins: defaultBins,
             accuracy: null,
             confidence: null,
-            ece: null
+            ece: 0.0028264240772238295
         }
     },
     test: {
-        accuracy: null,
-        macroF1: null,
-        microF1: null,
-        top5: null,
-        ece: null,
+        accuracy: 0.3368882687132463,
+        macroF1: 0.3201624419954927,
+        microF1: 0.3368882687132463,
+        top5: 0.6265324429383036,
+        ece: 0.29637046896614083,
         latencyMs: null,
-        throughput: null,
-        samples: '-/-',
+        throughput: 16.063614445058608,
+        samples: '3380/10033',
         confusion: {
-            labels: [],
+            labels: ["A","B","C","D","E","F","G","H","I","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y"],
             matrix: null
         },
         calibration: {
             bins: defaultBins,
             accuracy: null,
             confidence: null,
-            ece: null
+            ece: 0.29637046896614083
         }
     },
     validationBest: {},
