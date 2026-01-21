@@ -43,7 +43,11 @@ const resultsData = {
         }
     },
     validationBest: {},
-    baselines: []
+    baselines: [
+        { name: "Zero-shot CLIP", accuracy: 0.05389496918973604, macroF1: 0.04742928628000638 },
+        { name: "Linear-probe CLIP", accuracy: 0, macroF1: 0 },
+        { name: "Fine-tuned (Ours)", accuracy: 0, macroF1: 0 }
+    ]
     // optional:
     // ood: { dataset: { name: "Kaggle ASL Alphabet", split: "test", isOOD: true }, test: {...} }
 };
@@ -192,17 +196,17 @@ function drawCalibrationCurve(canvas, bins, accuracy, confidence, progress, high
 
     ctx.clearRect(0, 0, width, height);
 
-    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
     ctx.lineWidth = 1;
     ctx.strokeRect(padding, padding, plotW, plotH);
 
-    ctx.strokeStyle = 'rgba(226,232,240,0.35)';
+    ctx.strokeStyle = 'rgba(59,130,246,0.4)'; // blue line for perfect calibration (legend)
     ctx.beginPath();
     ctx.moveTo(padding, padding + plotH);
     ctx.lineTo(padding + plotW, padding);
     ctx.stroke();
 
-    ctx.strokeStyle = 'rgba(90, 164, 255, 0.95)';
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.85)'; // red line for measured calibration (legend)
     ctx.lineWidth = 2;
     ctx.beginPath();
     bins.forEach((bin, idx) => {
@@ -403,30 +407,28 @@ function renderConfusionAndCalibration(data) {
     const testLabels = Array.isArray(testConf.labels) && testConf.labels.length ? testConf.labels : defaultLabels;
     const valMatrixProvided = Array.isArray(valConf.matrix);
     const testMatrixProvided = Array.isArray(testConf.matrix);
-    if (!valMatrixProvided || !testMatrixProvided) return;
-    const valMatrix = valConf.matrix;
-    const testMatrix = testConf.matrix;
+    const valMatrix = valMatrixProvided ? valConf.matrix : null;
+    const testMatrix = testMatrixProvided ? testConf.matrix : null;
 
     const valCal = val.calibration || {};
     const testCal = tst.calibration || {};
-    const valBins = valCal.bins || [];
-    const testBins = testCal.bins || [];
+    const valBins = Array.isArray(valCal.bins) && valCal.bins.length ? valCal.bins : defaultBins;
+    const testBins = Array.isArray(testCal.bins) && testCal.bins.length ? testCal.bins : defaultBins;
     const valAccProvided = Array.isArray(valCal.accuracy);
     const valConfProvided = Array.isArray(valCal.confidence);
     const testAccProvided = Array.isArray(testCal.accuracy);
     const testConfProvided = Array.isArray(testCal.confidence);
-    if (!valAccProvided || !valConfProvided || !testAccProvided || !testConfProvided) return;
-    const valAcc = valCal.accuracy;
-    const valConfArr = valCal.confidence;
-    const testAcc = testCal.accuracy;
-    const testConfArr = testCal.confidence;
+    const valAcc = valAccProvided ? valCal.accuracy : null;
+    const valConfArr = valConfProvided ? valCal.confidence : null;
+    const testAcc = testAccProvided ? testCal.accuracy : null;
+    const testConfArr = testConfProvided ? testCal.confidence : null;
 
     const confusionTargets = [
         { canvas: document.getElementById('confusion-canvas'), tooltip: document.getElementById('confusion-tooltip'), labels: valLabels, matrix: valMatrix },
         { canvas: document.getElementById('confusion-test-canvas'), tooltip: document.getElementById('confusion-test-tooltip'), labels: testLabels, matrix: testMatrix }
     ];
     confusionTargets.forEach(({ canvas, tooltip, labels, matrix }) => {
-        if (!canvas) return;
+        if (!canvas || !matrix) return;
         drawConfusionMatrix(canvas, labels, matrix, 1);
         if (!canvas.dataset.hoverBound) {
             attachConfusionHover(canvas, tooltip, { confusion: { labels, matrix } });
@@ -439,7 +441,7 @@ function renderConfusionAndCalibration(data) {
         { canvas: document.getElementById('calibration-test-canvas'), tooltip: document.getElementById('calibration-test-tooltip'), bins: testBins, accuracy: testAcc, confidence: testConfArr }
     ];
     calibrationTargets.forEach(({ canvas, tooltip, bins, accuracy, confidence }) => {
-        if (!canvas) return;
+        if (!canvas || !accuracy || !confidence) return;
         drawCalibrationCurve(canvas, bins && bins.length ? bins : defaultBins, accuracy, confidence, 1);
         if (!canvas.dataset.hoverBound) {
             attachCalibrationHover(canvas, tooltip, { calibration: { bins, accuracy, confidence } });
@@ -454,6 +456,23 @@ async function loadResultsFiles(data) {
         const num = Number(value);
         return Number.isFinite(num) ? num : fallback;
     };
+
+    try {
+        const response = await fetch('static/results/test_zero_shot_20260121_055031_dashboard.json');
+        if (response.ok) {
+            const payload = await response.json();
+            const basic = payload.basic_evaluation || {};
+            const detailed = payload.detailed_analysis || {};
+            const zsAcc = toNumber(basic.accuracy);
+            const zsMacro = toNumber(detailed.macro_f1);
+            updated.baselines = [
+                { name: "Zero-shot CLIP", accuracy: zsAcc, macroF1: zsMacro },
+                { name: "Linear-probe CLIP (coming soon)", accuracy: 0, macroF1: 0 }
+            ];
+        }
+    } catch (err) {
+        console.warn('Could not load zero-shot JSON, keeping stub baselines.', err);
+    }
 
     try {
         const response = await fetch('static/results/validate_20260121_050345_dashboard.json');
@@ -543,6 +562,13 @@ async function loadResultsFiles(data) {
                 },
                 isOOD: true
             };
+
+            const zeroShot = (updated.baselines || []).find((b) => b.name.toLowerCase().includes('zero-shot')) || { name: "Zero-shot CLIP", accuracy: 0, macroF1: 0 };
+            updated.baselines = [
+                zeroShot,
+                { name: "Fine tuned", accuracy: updated.test.accuracy ?? 0, macroF1: updated.test.macroF1 ?? 0 },
+                { name: "Linear-probe CLIP (coming soon)", accuracy: 0, macroF1: 0 }
+            ];
         }
     } catch (err) {
         console.warn('Could not load test JSON, keeping stub data.', err);
