@@ -319,6 +319,8 @@ function renderResults(data) {
     setText('macro-test-f1', formatPercent(data.test.macroF1));
     setText('micro-test-f1', formatPercent(data.test.microF1 ?? data.test.accuracy ?? 0));
     setText('metric-test-top5', formatPercent(data.test.top5));
+    setText('metric-validate-ece', formatEce(data.test.ece));
+    setText('metric-test-ece', formatEce(data.test.ece));
 
     const throughputValue = data.test.latencyMs && data.test.latencyMs > 0
         ? formatLatency(data.test.latencyMs)

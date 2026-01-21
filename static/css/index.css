@@ -327,6 +327,11 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+.metric-chip-inline {
+  align-self: flex-start;
+  max-width: 220px;
+}
+
 .metric-chip-value {
   font-size: 1.2rem;
   font-weight: 700;
