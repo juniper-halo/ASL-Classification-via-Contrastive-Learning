@@ -413,6 +413,7 @@ body {
   font-size: 0.95rem;
   color: var(--text-primary);
   border-color: var(--border-color);
+  background: var(--background-primary);
 }
 
 .results-table {
@@ -430,6 +431,11 @@ body {
 
 .results-table tbody tr {
   border-bottom: 1px solid var(--border-color);
+  background: var(--background-primary);
+}
+
+.results-table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--background-accent) 60%, var(--background-primary));
 }
 
 .results-table.is-highlighted tbody tr {
