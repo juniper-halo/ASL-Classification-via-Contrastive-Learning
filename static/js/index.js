@@ -69,6 +69,26 @@ function renderBaselineChart(baselines) {
     if (!container) return;
     container.innerHTML = '';
 
+    const makeBar = (className, value) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'bar-wrap';
+
+        const bar = document.createElement('div');
+        bar.className = `bar ${className}`;
+        const pct = Math.max(0, Math.min(100, (value * 100)));
+        bar.style.setProperty('--bar-width', pct.toFixed(1) + '%');
+        bar.style.width = bar.style.getPropertyValue('--bar-width');
+        bar.style.opacity = '1';
+
+        const val = document.createElement('span');
+        val.className = 'bar-value-label';
+        val.textContent = formatPercent(value);
+
+        wrap.appendChild(bar);
+        wrap.appendChild(val);
+        return wrap;
+    };
+
     baselines.forEach((baseline) => {
         const row = document.createElement('div');
         row.className = 'bar-row';
@@ -80,22 +100,16 @@ function renderBaselineChart(baselines) {
         const bars = document.createElement('div');
         bars.className = 'bar-values';
 
-        const accBar = document.createElement('div');
-        accBar.className = 'bar bar-acc';
-        accBar.style.setProperty('--bar-width', (baseline.accuracy * 100).toFixed(1) + '%');
-        accBar.style.width = accBar.style.getPropertyValue('--bar-width');
-        accBar.style.opacity = '1';
-        accBar.textContent = formatPercent(baseline.accuracy);
-
-        const f1Bar = document.createElement('div');
-        f1Bar.className = 'bar bar-f1';
-        f1Bar.style.setProperty('--bar-width', (baseline.macroF1 * 100).toFixed(1) + '%');
-        f1Bar.style.width = f1Bar.style.getPropertyValue('--bar-width');
-        f1Bar.style.opacity = '1';
-        f1Bar.textContent = formatPercent(baseline.macroF1);
-
-        bars.appendChild(accBar);
-        bars.appendChild(f1Bar);
+        const isComingSoon = baseline.name.toLowerCase().includes('coming soon');
+        if (isComingSoon) {
+            const soon = document.createElement('div');
+            soon.className = 'bar-coming-soon';
+            soon.textContent = '(coming soon)';
+            bars.appendChild(soon);
+        } else {
+            bars.appendChild(makeBar('bar-acc', baseline.accuracy || 0));
+            bars.appendChild(makeBar('bar-f1', baseline.macroF1 || 0));
+        }
 
         row.appendChild(label);
         row.appendChild(bars);

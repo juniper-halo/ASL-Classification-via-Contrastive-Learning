@@ -505,7 +505,8 @@ body {
 }
 
 .bar-values {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
 }
 
@@ -541,6 +542,27 @@ body {
 
 .bar {
   z-index: 1;
+}
+
+.bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bar-value-label {
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 3.5rem;
+}
+
+.bar-coming-soon {
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: 0.35rem 0.5rem;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--border-radius);
+  display: inline-block;
 }
 
 .results-table th,
