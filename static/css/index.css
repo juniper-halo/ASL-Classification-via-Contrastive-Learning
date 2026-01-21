@@ -367,8 +367,11 @@ body {
   bottom: 0.5rem;
   right: 0.5rem;
   z-index: 2;
-  padding: 0.65rem 0.75rem;
-  min-width: 140px;
+  padding: 0.35rem 0.6rem;
+  min-width: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .metric-value {
