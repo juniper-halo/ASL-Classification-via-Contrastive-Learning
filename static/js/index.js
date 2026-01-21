@@ -311,16 +311,22 @@ function formatThroughput(value) {
 function renderResults(data) {
     if (!data) return;
 
-    setText('metric-test-acc', formatPercent(data.test.accuracy));
-    setText('metric-test-f1', formatPercent(data.test.macroF1));
+    setText('metric-test-top1', formatPercent(data.test.accuracy));
+    setText('macro-test-f1', formatPercent(data.test.macroF1));
+    setText('micro-test-f1', formatPercent(data.test.microF1 ?? data.test.accuracy ?? 0));
     setText('metric-test-top5', formatPercent(data.test.top5));
     setText('metric-test-ece', formatEce(data.test.ece));
 
+    const throughputValue = data.test.latencyMs && data.test.latencyMs > 0
+        ? formatLatency(data.test.latencyMs)
+        : formatThroughput(data.test.throughput);
     if (data.test.latencyMs && data.test.latencyMs > 0) {
-        setText('metric-throughput', formatLatency(data.test.latencyMs));
+        setText('metric-throughput', throughputValue);
+        setText('metric-test-throughput', throughputValue);
         setText('metric-throughput-label', 'Latency (ms/img)');
     } else {
-        setText('metric-throughput', formatThroughput(data.test.throughput));
+        setText('metric-throughput', throughputValue);
+        setText('metric-test-throughput', throughputValue);
         setText('metric-throughput-label', 'Throughput (img/s)');
     }
 

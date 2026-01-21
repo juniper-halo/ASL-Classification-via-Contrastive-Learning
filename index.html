@@ -332,6 +332,51 @@
               <div class="card analysis-box">
                 <div class="card-content">
                   <p class="title is-5">Validation Pass</p>
+                  <div class="metrics-grid">
+                    <div class="metric-chip">
+                      <p class="metric-chip-value" id="metric-test-top1">0.00</p>
+                      <p class="metric-chip-label">Top-1 Accuracy</p>
+                    </div>
+                    <div class="metric-chip">
+                      <p class="metric-chip-value" id="metric-test-top5">0.00</p>
+                      <p class="metric-chip-label">Top-5 Accuracy</p>
+                    </div>
+                    <div class="metric-chip">
+                      <p class="metric-chip-value" id="macro-test-f1">0.00</p>
+                      <p class="metric-chip-label">Macro F1 Score</p>
+                    </div>
+                    <div class="metric-chip">
+                      <p class="metric-chip-value" id="micro-test-f1">0.00</p>
+                      <p class="metric-chip-label">Micro F1 Score</p>
+                    </div>
+                    <div class="metric-chip">
+                      <p class="metric-chip-value" id="metric-test-throughput">0.00</p>
+                      <p class="metric-chip-label">Throughput (img/s)</p>
+                    </div>
+                    <div class="metric-chip">
+                      <p class="metric-chip-value" id="metric-test-samples">0.00</p>
+                      <p class="metric-chip-label">Samples (correct/total)</p>
+                    </div>
+                  </div>
+                  <div class="analysis-graphs">
+                    <h4 class="is-size-6">Confusion matrix</h4>
+                    <div class="results-canvas-wrap">
+                      <canvas id="confusion-canvas" class="results-canvas results-canvas--square" aria-label="Confusion matrix"></canvas>
+                      <div class="canvas-tooltip" id="confusion-tooltip"></div>
+                    </div>
+                    <p class="chart-caption">Rows = true labels, columns = predicted labels.</p>
+                    <h5 class="is-size-6">Most Confused Pairs</h5>
+                    <ul id="confusion-pairs"></ul>
+
+                    <h4 class="is-size-6">Calibration</h4>
+                    <div class="results-canvas-wrap">
+                      <canvas id="calibration-canvas" class="results-canvas results-canvas--wide" aria-label="Calibration curve"></canvas>
+                      <div class="canvas-tooltip" id="calibration-tooltip"></div>
+                    </div>
+                    <p class="chart-caption">Blue = accuracy, gray = perfect calibration.</p>
+                    <p class="metric-label">ECE</p>
+                    <p class="metric-value" id="calibration-ece">0.00</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -382,91 +427,6 @@
                 </tr>
               </tbody>
             </table>
-          </div>
-
-          <h3>Headline metrics</h3>
-          <div class="columns is-multiline results-cards">
-            <div class="column is-one-third">
-              <div class="card metric-card">
-                <div class="card-content">
-                  <p class="metric-value" id="metric-test-acc">0.00</p>
-                  <p class="metric-label">Test Top-1 Accuracy</p>
-                </div>
-              </div>
-            </div>
-            <div class="column is-one-third">
-              <div class="card metric-card">
-                <div class="card-content">
-                  <p class="metric-value" id="metric-test-f1">0.00</p>
-                  <p class="metric-label">Test Macro F1</p>
-                </div>
-              </div>
-            </div>
-            <div class="column is-one-third">
-              <div class="card metric-card">
-                <div class="card-content">
-                  <p class="metric-value" id="metric-test-top5">0.00</p>
-                  <p class="metric-label">Test Top-5 Accuracy</p>
-                </div>
-              </div>
-            </div>
-            <div class="column is-one-third">
-              <div class="card metric-card">
-                <div class="card-content">
-                  <p class="metric-value" id="metric-test-ece">0.00</p>
-                  <p class="metric-label">Test ECE</p>
-                </div>
-              </div>
-            </div>
-            <div class="column is-one-third">
-              <div class="card metric-card">
-                <div class="card-content">
-                  <p class="metric-value" id="metric-throughput">0.0</p>
-                  <p class="metric-label" id="metric-throughput-label">Latency (ms/img)</p>
-                </div>
-              </div>
-            </div>
-            <div class="column is-one-third">
-              <div class="card metric-card">
-                <div class="card-content">
-                  <p class="metric-value" id="metric-dataset">HF ASL Dataset</p>
-                  <p class="metric-label">
-                    Dataset
-                    <span class="badge" id="dataset-badge">In-dataset Test</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <h3>Confusion matrix</h3>
-          <div class="columns is-vcentered">
-            <div class="column is-half">
-              <div class="results-canvas-wrap">
-                <canvas id="confusion-canvas" class="results-canvas results-canvas--square" aria-label="Confusion matrix"></canvas>
-                <div class="canvas-tooltip" id="confusion-tooltip"></div>
-              </div>
-              <p class="chart-caption">Rows = true labels, columns = predicted labels.</p>
-            </div>
-            <div class="column is-half">
-              <h4 class="is-size-5">Most Confused Pairs</h4>
-              <ul id="confusion-pairs"></ul>
-            </div>
-          </div>
-
-          <h3>Calibration</h3>
-          <div class="columns is-vcentered">
-            <div class="column is-half">
-              <div class="results-canvas-wrap">
-                <canvas id="calibration-canvas" class="results-canvas results-canvas--wide" aria-label="Calibration curve"></canvas>
-                <div class="canvas-tooltip" id="calibration-tooltip"></div>
-              </div>
-              <p class="chart-caption">Blue = accuracy, gray = perfect calibration.</p>
-            </div>
-            <div class="column is-half">
-              <p class="metric-label">ECE</p>
-              <p class="metric-value" id="calibration-ece">0.00</p>
-            </div>
           </div>
 
           <div id="ood-results" class="ood-section">
