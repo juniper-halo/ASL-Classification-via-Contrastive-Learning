@@ -297,6 +297,21 @@ body {
   overflow: hidden;
 }
 
+.analysis-box {
+  min-height: 340px;
+  background: var(--background-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.analysis-box .title {
+  color: var(--text-primary);
+}
+
 .metric-value {
   font-size: 1.75rem;
   font-weight: 700;
@@ -778,6 +793,7 @@ a:focus {
     color: var(--text-primary) !important;
   }
 
+  .analysis-box,
   .metric-card,
   .bar-chart,
   .results-table,
