@@ -31,24 +31,6 @@ const resultsData = {
     // ood: { dataset: { name: "Kaggle ASL Alphabet", split: "test", isOOD: true }, test: {...} }
 };
 
-if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-}
-
-function scrollToTopOnLoad() {
-    if (window.location.hash) return;
-    const scrollElement = document.scrollingElement || document.documentElement;
-    scrollElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-}
-
-window.addEventListener('pageshow', scrollToTopOnLoad);
-window.addEventListener('load', () => {
-    scrollToTopOnLoad();
-    requestAnimationFrame(scrollToTopOnLoad);
-});
-
 function formatPercent(value) {
     if (typeof value !== 'number') return '0.00';
     return (value * 100).toFixed(2) + '%';
