@@ -400,12 +400,12 @@ async function loadResultsFiles(data) {
             const detailed = basic.detailed_metrics || {};
             const cal = detailed.calibration || {};
             updates.test = {
-                accuracy: basic.accuracy,
+                accuracy: basic.accuracy, // Top-1 accuracy
                 macroF1: detailed.macro_f1,
                 top5: basic.topk_accuracy,
                 ece: cal.ece,
                 latencyMs: null,
-                throughput: 15.61
+                throughput: basic.samples_per_second || 15.61
             };
             updates.dataset = {
                 name: payload.model_id ? `Test (${payload.model_id.split('/').pop()})` : 'Test',
