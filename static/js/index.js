@@ -214,7 +214,7 @@ function drawCalibrationCurve(canvas, bins, accuracy, confidence, progress, high
     ctx.lineWidth = 1;
     ctx.strokeRect(padding, padding, plotW, plotH);
 
-    ctx.strokeStyle = 'rgba(96,165,250,0.75)'; // brighter blue line for perfect calibration
+    ctx.strokeStyle = 'rgba(147,197,253,0.95)'; // brighter blue line for perfect calibration
     ctx.beginPath();
     ctx.moveTo(padding, padding + plotH);
     ctx.lineTo(padding + plotW, padding);

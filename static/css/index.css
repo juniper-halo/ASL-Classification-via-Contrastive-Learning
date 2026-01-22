@@ -507,6 +507,29 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+.confusion-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.confusion-legend--side {
+  margin: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .confusion-row {
+    grid-template-columns: 1fr;
+  }
+
+  .confusion-legend--side {
+    margin: 0.5rem 0 1rem;
+    white-space: normal;
+  }
+}
+
 .bar-row {
   display: grid;
   grid-template-columns: minmax(160px, 220px) 1fr;

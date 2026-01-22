@@ -379,15 +379,17 @@
                   </div>
                   <div class="analysis-graphs">
                     <h4 class="is-size-6">Confusion matrix</h4>
-                    <div class="results-canvas-wrap">
-                      <canvas id="confusion-canvas" class="results-canvas results-canvas--square" aria-label="Confusion matrix"></canvas>
-                      <div class="canvas-tooltip" id="confusion-tooltip"></div>
-                    </div>
-                    <div class="confusion-legend">
-                      <span class="legend-item">
-                        <span class="legend-swatch legend-swatch--confusion"></span>
-                        Low → High frequency
-                      </span>
+                    <div class="confusion-row">
+                      <div class="results-canvas-wrap">
+                        <canvas id="confusion-canvas" class="results-canvas results-canvas--square" aria-label="Confusion matrix"></canvas>
+                        <div class="canvas-tooltip" id="confusion-tooltip"></div>
+                      </div>
+                      <div class="confusion-legend confusion-legend--side">
+                        <span class="legend-item">
+                          <span class="legend-swatch legend-swatch--confusion"></span>
+                          Low → High frequency
+                        </span>
+                      </div>
                     </div>
 
                     <h4 class="is-size-6">Calibration curve</h4>
@@ -439,15 +441,17 @@
                   </div>
                   <div class="analysis-graphs">
                     <h4 class="is-size-6">Confusion matrix</h4>
-                    <div class="results-canvas-wrap">
-                      <canvas id="confusion-test-canvas" class="results-canvas results-canvas--square" aria-label="Confusion matrix (test)"></canvas>
-                      <div class="canvas-tooltip" id="confusion-test-tooltip"></div>
-                    </div>
-                    <div class="confusion-legend">
-                      <span class="legend-item">
-                        <span class="legend-swatch legend-swatch--confusion"></span>
-                        Low → High frequency
-                      </span>
+                    <div class="confusion-row">
+                      <div class="results-canvas-wrap">
+                        <canvas id="confusion-test-canvas" class="results-canvas results-canvas--square" aria-label="Confusion matrix (test)"></canvas>
+                        <div class="canvas-tooltip" id="confusion-test-tooltip"></div>
+                      </div>
+                      <div class="confusion-legend confusion-legend--side">
+                        <span class="legend-item">
+                          <span class="legend-swatch legend-swatch--confusion"></span>
+                          Low → High frequency
+                        </span>
+                      </div>
                     </div>
 
                     <h4 class="is-size-6">Calibration curve</h4>
