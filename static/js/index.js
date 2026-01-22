@@ -501,10 +501,10 @@ async function loadResultsFiles(data) {
                 : updated.validation.confusion.labels;
             const matrix = detailed.confusion_matrix_normalized || detailed.confusion_matrix;
 
-            const bins = Array.isArray(cal.bin_confidence) && cal.bin_confidence.length
-                ? cal.bin_confidence
-                : (Array.isArray(cal.bin_edges) && cal.bin_edges.length > 1
-                    ? cal.bin_edges.slice(0, -1).map((start, idx) => (start + cal.bin_edges[idx + 1]) / 2)
+            const bins = Array.isArray(cal.bin_edges) && cal.bin_edges.length > 1
+                ? cal.bin_edges.slice(0, -1).map((start, idx) => (start + cal.bin_edges[idx + 1]) / 2)
+                : (Array.isArray(cal.bin_confidence) && cal.bin_confidence.length
+                    ? cal.bin_confidence
                     : defaultBins);
             const valCorrect = toNumber(basic.correct_predictions);
             const valTotal = toNumber(basic.total_predictions);
@@ -549,10 +549,10 @@ async function loadResultsFiles(data) {
                 : updated.test.confusion.labels;
             const matrix = detailed.confusion_matrix_normalized || detailed.confusion_matrix;
 
-            const bins = Array.isArray(cal.bin_confidence) && cal.bin_confidence.length
-                ? cal.bin_confidence
-                : (Array.isArray(cal.bin_edges) && cal.bin_edges.length > 1
-                    ? cal.bin_edges.slice(0, -1).map((start, idx) => (start + cal.bin_edges[idx + 1]) / 2)
+            const bins = Array.isArray(cal.bin_edges) && cal.bin_edges.length > 1
+                ? cal.bin_edges.slice(0, -1).map((start, idx) => (start + cal.bin_edges[idx + 1]) / 2)
+                : (Array.isArray(cal.bin_confidence) && cal.bin_confidence.length
+                    ? cal.bin_confidence
                     : defaultBins);
 
             updated.test = {
