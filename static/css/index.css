@@ -508,20 +508,25 @@ body {
 }
 
 .confusion-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 1rem;
+  display: flex;
   align-items: center;
+  gap: 1.25rem;
+}
+
+.confusion-row .results-canvas-wrap {
+  flex: 0 0 auto;
 }
 
 .confusion-legend--side {
   margin: 0;
+  flex: 1 1 auto;
   white-space: nowrap;
 }
 
 @media (max-width: 768px) {
   .confusion-row {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .confusion-legend--side {
@@ -529,6 +534,7 @@ body {
     white-space: normal;
   }
 }
+
 
 .bar-row {
   display: grid;
